@@ -1,14 +1,34 @@
 #!/bin/bash
 set -e
 
-INPUT_DIR="data/merged_fastq"
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <input_directory>"
+    echo "Example: $0 /path/to/fastq/directory"
+    exit 1
+fi
+
+INPUT_DIR="$1"
 OUTPUT_DIR="results/dropseq_processed"
 mkdir -p ${OUTPUT_DIR}
 
-# Process each sample
-for sample in F1 F2 d1; do
-    echo "Processing sample ${sample}..."
+if [ ! -d "$INPUT_DIR" ]; then
+    echo "Error: Input directory $INPUT_DIR does not exist"
+    exit 1
+fi
+
+# Check if input files exist with expected pattern
+if ! ls ${INPUT_DIR}/*_R1.fastq.gz >/dev/null 2>&1; then
+    echo "Error: No files matching *_R1.fastq.gz found in $INPUT_DIR"
+    exit 1
+fi
+
+# Process each sample (assuming files are named sample_R1.fastq.gz and sample_R2.fastq.gz)
+for r1_file in ${INPUT_DIR}/*_R1.fastq.gz; do
+    sample=$(basename $r1_file _R1.fastq.gz)
+    r2_file="${INPUT_DIR}/${sample}_R2.fastq.gz"
     
+    echo "Processing sample ${sample}..."
+        
     # 1. Convert FASTQ to uBAM
     picard FastqToSam \
         F1=${INPUT_DIR}/${sample}_R1.fastq.gz \

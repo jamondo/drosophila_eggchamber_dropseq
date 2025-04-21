@@ -6,6 +6,9 @@ Pipeline for processing Drop-seq single-cell RNA-seq data from Drosophila egg ch
 # Create conda environment
 mamba env create -f environment.yml
 
+Note: For mac chips use
+CONDA_SUBDIR=osx-64 mamba env create -f environment.yml
+
 # Activate environment
 conda activate drosophila_dropseq
 

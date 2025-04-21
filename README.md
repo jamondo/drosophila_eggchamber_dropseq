@@ -22,7 +22,7 @@ bash scripts/download_reference.sh
 bash scripts/generate_star_files.sh
 
 # Merge sequencing lanes for each sample
-bash scripts/combine_lanes.sh
+bash scripts/combine_lanes.sh /path/to/fastq/dir
 
 # Process samples through Drop-seq pipeline
-bash scripts/perform_dropseq_preprocessing.sh
+bash scripts/perform_dropseq_preprocessing.sh /path/to/merged_fastq/dir

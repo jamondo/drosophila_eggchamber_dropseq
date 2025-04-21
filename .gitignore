@@ -1,0 +1,18 @@
+# Data files
+*.fastq.gz
+*.bam
+*.fasta
+*.fa
+*.gtf
+*.dict
+
+# Build directories
+Drop-seq/
+references/
+results/
+data/
+logs/
+
+# System files
+.DS_Store
+*.swp

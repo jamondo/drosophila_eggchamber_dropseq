@@ -1,0 +1,14 @@
+name: drosophila_dropseq
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10
+  - star
+  - samtools
+  - picard
+  - snakemake
+  - pip
+  - wget
+  - gradle

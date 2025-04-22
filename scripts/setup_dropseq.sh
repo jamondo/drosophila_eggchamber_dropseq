@@ -9,7 +9,7 @@ cd Drop-seq
 ./gradlew installDist
 
 # Create symbolic link to make dropseq available in PATH
-ln -s $(pwd)/build/install/dropseq/bin/dropseq $CONDA_PREFIX/bin/dropseq
+ln -s "$(pwd)/dropseq/build/install/dropseq/bin/dropseq" "$CONDA_PREFIX/bin/dropseq"
 
 # Test installation
 dropseq --help

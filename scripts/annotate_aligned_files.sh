@@ -20,24 +20,33 @@ for aligned_bam in ${ALIGNED_DIR}/*_Aligned.sortedByCoord.out.bam; do
     echo "Processing ${sample}..."
 
     # 1. Sort aligned BAM by queryname
-    picard SortSam \
-        I=${aligned_bam} \
-        O=${OUTPUT_DIR}/${sample}_queryname_sorted.bam \
-        SORT_ORDER=queryname \
-        TMP_DIR=${TMP_DIR}
+    if [ ! -f ${OUTPUT_DIR}/${sample}_queryname_sorted.bam ]; then
+        picard SortSam \
+            I=${aligned_bam} \
+            O=${OUTPUT_DIR}/${sample}_queryname_sorted.bam \
+            SORT_ORDER=queryname \
+            TMP_DIR=${TMP_DIR}
+    else
+        echo "Skipping SortSam for ${sample}, output already exists."
+    fi
+
 
     # 2. Merge aligned BAM with cell/molecular barcodes
-    picard MergeBamAlignment \
-        REFERENCE_SEQUENCE=references/dmel-all-chromosome-r6.63.fasta \
-        UNMAPPED_BAM=${TAGGED_DIR}/${sample}_polyA_filtered.bam \
-        ALIGNED_BAM=${OUTPUT_DIR}/${sample}_queryname_sorted.bam \
-        OUTPUT=${OUTPUT_DIR}/${sample}_merged.bam \
-        INCLUDE_SECONDARY_ALIGNMENTS=false \
-        PAIRED_RUN=false \
-        TMP_DIR=${TMP_DIR}
+    if [ ! -f ${OUTPUT_DIR}/${sample}_merged.bam ]; then
+        picard MergeBamAlignment \
+            REFERENCE_SEQUENCE=references/dmel-all-chromosome-r6.63.fasta \
+            UNMAPPED_BAM=${TAGGED_DIR}/${sample}_polyA_filtered.bam \
+            ALIGNED_BAM=${OUTPUT_DIR}/${sample}_queryname_sorted.bam \
+            OUTPUT=${OUTPUT_DIR}/${sample}_merged.bam \
+            INCLUDE_SECONDARY_ALIGNMENTS=false \
+            PAIRED_RUN=false \
+            TMP_DIR=${TMP_DIR}
+    else
+        echo "Skipping MergeBamAlignment for ${sample}, output already exists."
+    fi
 
     # 3. Tag with gene exons
-    dropseq TagReadWithGeneExon \
+    dropseq TagReadWithGeneExonFunction \
         I=${OUTPUT_DIR}/${sample}_merged.bam \
         O=${OUTPUT_DIR}/${sample}_gene_tagged.bam \
         ANNOTATIONS_FILE=references/dmel-all-r6.63.gtf \

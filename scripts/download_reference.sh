@@ -18,15 +18,16 @@ gal4_len=$(grep -A1 "^>Gal4" reference_files/exogenous_gene_sequences.txt | tail
 gfp_len=$(grep -A1 "^>LifeActGFP" reference_files/exogenous_gene_sequences.txt | tail -n1 | tr -d '\n' | wc -c)
 
 # Add GTF entries
-cat << EOF >> references/dmel-all-r6.63.gtf
+cat <<- EOF >> references/dmel-all-r6.63.gtf
+exogenous_genes	Custom	gene	1	${dsred_len}	.	+	.	gene_id "dsRedExpress"; gene_name "dsRedExpress";
+exogenous_genes	Custom	exon	1	${dsred_len}	.	+	.	gene_id "dsRedExpress"; transcript_id "dsRedExpress_t"; gene_name "dsRedExpress";
 
-exogenous_genes	Custom	gene	1	${dsred_len}	.	+	.	gene_id "dsRedExpress"; gene_name "dsRedExpress"
-exogenous_genes	Custom	exon	1	${dsred_len}	.	+	.	gene_id "dsRedExpress"; transcript_id "dsRedExpress_t"; gene_name "dsRedExpress"
+exogenous_genes	Custom	gene	$((dsred_len+1))	$((dsred_len+gal4_len))	.	+	.	gene_id "Gal4"; gene_name "Gal4";
+exogenous_genes	Custom	exon	$((dsred_len+1))	$((dsred_len+gal4_len))	.	+	.	gene_id "Gal4"; transcript_id "Gal4_t"; gene_name "Gal4";
 
-exogenous_genes	Custom	gene	$((dsred_len+1))	$((dsred_len+gal4_len))	.	+	.	gene_id "Gal4"; gene_name "Gal4"
-exogenous_genes	Custom	exon	$((dsred_len+1))	$((dsred_len+gal4_len))	.	+	.	gene_id "Gal4"; transcript_id "Gal4_t"; gene_name "Gal4"
-
-exogenous_genes	Custom	gene	$((dsred_len+gal4_len+1))	$((dsred_len+gal4_len+gfp_len))	.	+	.	gene_id "LifeActGFP"; gene_name "LifeActGFP"
-exogenous_genes	Custom	exon	$((dsred_len+gal4_len+1))	$((dsred_len+gal4_len+gfp_len))	.	+	.	gene_id "LifeActGFP"; transcript_id "LifeActGFP_t"; 
-gene_name "LifeActGFP"
+exogenous_genes	Custom	gene	$((dsred_len+gal4_len+1))	$((dsred_len+gal4_len+gfp_len))	.	+	.	gene_id "LifeActGFP"; gene_name "LifeActGFP";
+exogenous_genes	Custom	exon	$((dsred_len+gal4_len+1))	$((dsred_len+gal4_len+gfp_len))	.	+	.	gene_id "LifeActGFP"; transcript_id "LifeActGFP_t"; gene_name "LifeActGFP";
 EOF
+
+sed -E 's/gene_symbol/gene_name/g; s/transcript_symbol/transcript_name/g' references/dmel-all-r6.63.gtf \
+  | awk 'BEGIN{OFS="\t"} {$1=$1; print}' > references/tmp.gtf && mv references/tmp.gtf references/dmel-all-r6.63.gtf

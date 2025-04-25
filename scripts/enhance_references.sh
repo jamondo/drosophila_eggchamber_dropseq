@@ -14,22 +14,25 @@ picard CreateSequenceDictionary \
 
 echo "Converting GTF to refFlat..."
 dropseq ConvertToRefFlat \
-  ANNOTATIONS_FILE=references/dmel-all-r6.63.gtf \
+  ANNOTATIONS_FILE=references/dmel-all-r6.63.with_transgenes.gtf \
   OUTPUT=references/dmel-all-r6.63.refFlat \
   SEQUENCE_DICTIONARY=references/dmel-all-chromosome-r6.63.dict
 
 echo "Reducing GTF..."
 dropseq ReduceGtf \
-  GTF=references/dmel-all-r6.63.gtf \
+  GTF=references/dmel-all-r6.63.with_transgenes.gtf \
   OUTPUT=references/dmel-all-r6.63.reduced.gtf \
   SEQUENCE_DICTIONARY=references/dmel-all-chromosome-r6.63.dict \
   ENHANCE_GTF=true
 
 echo "Creating interval files..."
+mkdir -p references/intervals
+
 dropseq CreateIntervalsFiles \
-  REDUCED_GTF=references/dmel-all-r6.63.reduced.gtf \
   SEQUENCE_DICTIONARY=references/dmel-all-chromosome-r6.63.dict \
-  OUTPUT=references/dmel-all-r6.63.intervals \
-  PREFIX=gene
+  REDUCED_GTF=references/dmel-all-r6.63.reduced.gtf \
+  OUTPUT=references/intervals \
+  PREFIX=dmel-all-r6.63 \
+  MT_SEQUENCE=mitochondrion_genome
 
 echo "Reference preparation complete!"

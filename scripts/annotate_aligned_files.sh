@@ -49,7 +49,7 @@ for aligned_bam in ${ALIGNED_DIR}/*_Aligned.sortedByCoord.out.bam; do
     dropseq TagReadWithGeneExonFunction \
         I=${OUTPUT_DIR}/${sample}_merged.bam \
         O=${OUTPUT_DIR}/${sample}_gene_tagged.bam \
-        ANNOTATIONS_FILE=references/dmel-all-r6.63.gtf \
+        ANNOTATIONS_FILE=references/dmel-all-r6.63.reduced.gtf \
         TAG=GE \
         TMP_DIR=${TMP_DIR}
 
